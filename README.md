@@ -1,14 +1,42 @@
-# Asetio Landing and Documentation
+# Documentia — Website
 
-Single Nuxt project for Asetio's public web experience.
+Landing page de [Documentia](https://documentia.app), plataforma de gestión documental y cumplimiento con IA para empresas que se auditan bajo normas ISO y SGI.
 
-## Structure
+## Stack
 
-- `/` is the commercial landing page, implemented as a custom Nuxt page with Vue components and Tailwind/Preline-style UI.
-- `/docs` is the product documentation, powered by Docus/Nuxt Content and Markdown.
-- `/en/docs` contains the English documentation.
+- **Nuxt 4** (`compatibilityVersion: 4`, directorio `app/`)
+- **Nuxt UI v3** con `@nuxt/icon` y paleta violet personalizada
+- **Tailwind CSS v4** con `@theme` override
+- Modo claro por defecto (`colorMode.preference: 'light'`)
 
-## Development
+## Estructura
+
+```
+app/
+  pages/
+    index.vue              # Página principal (landing)
+  components/
+    content/
+      CustomHero.vue
+      StatsSection.vue
+      WorkflowSection.vue  # Flujo de trabajo con IntersectionObserver
+      IngestionFlow.vue    # Diagrama fuentes → ingestor → IA → outputs
+      AuditKanbanSection.vue
+      PlatformLayers.vue
+      FeaturesSection.vue
+      UseCasesSection.vue
+      TrustSection.vue
+      PositioningSection.vue
+      CelebrationSection.vue
+      FaqSection.vue
+  layouts/
+    default.vue
+assets/
+  css/
+    custom.css
+```
+
+## Desarrollo
 
 ```bash
 npm install
@@ -19,10 +47,4 @@ npm run dev
 
 ```bash
 npm run build
-```
-
-Nuxt Content uses `better-sqlite3` internally to index Markdown. If Node changes, rebuild that native dependency:
-
-```bash
-npm rebuild better-sqlite3
 ```
