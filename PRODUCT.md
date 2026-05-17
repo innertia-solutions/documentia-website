@@ -1,6 +1,9 @@
 # Documentia — Documentación base del producto
 
 > Última revisión: 2026-05-16
+>
+> **V1** — Gestión documental + cumplimiento + copiloto IA de auditoría + AI Workspace corporativo
+> **V2** — Documentia como proxy de IA corporativa con tokenización de entidades sensibles *(visión)*
 
 ---
 
@@ -202,9 +205,78 @@ Documentia es:
 
 ---
 
-## Fuera del scope
+## Fuera del scope (V1)
 
 - Generación de minutas de reunión (integración posible con Granola, Diio)
 - Firma electrónica propia (integración con DocuSeal)
 - ERP o gestión de procesos operacionales
 - Formación y capacitación online
+
+---
+
+## Visión V2 — Documentia como proxy de IA corporativa
+
+> *Esta sección describe la dirección de largo plazo del producto, no el scope de V1.*
+
+### El problema que resuelve
+
+Hoy cuando un empleado usa ChatGPT o Claude directamente:
+
+```
+Empleado → "Analiza el proyecto Copayapu de Colbún, 450MW, flujo X..."
+               ↓
+           Anthropic recibe: propietario + datos + contexto completo
+```
+
+El proveedor de IA conoce quién es el cliente, cuál es el proyecto, cuáles son los datos operacionales. Si hay un incidente de seguridad, si los datos se usan para entrenamiento, o si hay una filtración — la empresa expuso su información más sensible sin saberlo.
+
+### La solución: tokenización de entidades como middleware
+
+Documentia actúa como proxy entre los empleados y la IA. Antes de enviar cualquier prompt a Claude, una capa de anonimización reemplaza las entidades sensibles por tokens neutros:
+
+```
+Empleado → Documentia → [Capa de tokenización]
+                             ↓
+"Proyecto Copayapu, cliente Colbún, 450MW"
+   → "Proyecto [P-001], cliente [C-004], [VAL-01]"
+                             ↓
+                         Claude API
+                             ↓
+Respuesta con tokens → Documentia de-tokeniza → Empleado ve contexto real
+```
+
+Anthropic procesa la lógica del negocio — nunca conoce al propietario.
+
+### Por qué Documentia es el lugar natural para esto
+
+El repositorio documental ya contiene el diccionario de entidades sensibles de la empresa: clientes, proyectos, operaciones, códigos internos. No hay que construir esa base desde cero — Documentia ya la tiene, clasificada y gobernada.
+
+### Arquitectura por fases
+
+| Fase | Qué hace | Cuándo |
+|---|---|---|
+| **Fase 1** (V1 AI Workspace) | Bloquea documentos confidenciales antes de llegar a la IA | V1 |
+| **Fase 2** (V2 early) | Tokenización de entidades del diccionario Documentia antes de cada prompt | V2 |
+| **Fase 3** (V2 full) | NER dinámico: detecta entidades sensibles aunque no estén en el diccionario | V2 |
+
+### Casos de uso V2
+
+- Ingenieros actualizan proyectos y consultan a la IA sobre datos técnicos sin exponer cliente ni operación
+- Área comercial usa IA para analizar propuestas sin que el proveedor sepa de qué cliente se trata
+- RRHH consulta a la IA sobre casos de personas sin exponer identidades
+- La empresa puede certificar ante auditores que ningún dato propietario identificable salió hacia proveedores externos de IA
+
+### El argumento de compliance
+
+> "Anthropic no sabe que ese proyecto es de Colbún. Solo sabe que hay un [P-001] con [VAL-01]. El dato calculable viaja. El propietario se queda."
+
+Para empresas en industrias reguladas (minería, energía, salud, finanzas), esto pasa de ser una ventaja competitiva a un requisito de operación.
+
+### Lo que es difícil (honestidad técnica)
+
+- Referencias implícitas no tokenizables ("el proyecto que firmamos el año pasado")
+- Inferencias de Claude a partir de datos técnicos muy específicos de industria
+- Información sensible emergente por combinación de datos aparentemente inocuos
+- Requiere que las entidades estén bien clasificadas en Documentia para funcionar bien
+
+Estos son problemas resolubles progresivamente — no bloqueantes para lanzar V2 en fases.
